@@ -5,6 +5,7 @@ import {
   doc,
   onSnapshot,
   serverTimestamp,
+  updateDoc,
   Unsubscribe,
 } from "firebase/firestore";
 import { db } from "../lib/firebase";
@@ -71,4 +72,21 @@ export async function deleteExpense(
   expenseId: string
 ): Promise<void> {
   await deleteDoc(doc(db, "artifacts", appId, "users", userId, "expenses", expenseId));
+}
+
+/**
+ * Updates an expense document by ID.
+ */
+export async function updateExpense(
+  userId: string,
+  appId: string,
+  expenseId: string,
+  data: NewExpenseInput
+): Promise<void> {
+  await updateDoc(doc(db, "artifacts", appId, "users", userId, "expenses", expenseId), {
+    amount: data.amount,
+    category: data.category,
+    date: data.date,
+    note: data.note,
+  });
 }
