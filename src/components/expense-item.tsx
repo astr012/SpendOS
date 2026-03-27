@@ -2,7 +2,7 @@
 
 import { Trash2, LucideIcon, Pencil } from "lucide-react";
 import { Expense } from "../types/expense";
-import { formatINR } from "../lib/currency";
+import { formatCurrency } from "../lib/currency";
 
 interface ExpenseItemProps {
   expense: Expense;
@@ -10,9 +10,10 @@ interface ExpenseItemProps {
   onDelete: (id: string) => void;
   onEdit: (id: string) => void;
   isDeleting: boolean;
+  currencyCode: string;
 }
 
-export default function ExpenseItem({ expense, icon: Icon, onDelete, onEdit, isDeleting }: ExpenseItemProps) {
+export default function ExpenseItem({ expense, icon: Icon, onDelete, onEdit, isDeleting, currencyCode }: ExpenseItemProps) {
   return (
     <div
       className={`group flex items-center justify-between gap-4 p-4 rounded-2xl border transition-all duration-300 ${
@@ -40,7 +41,7 @@ export default function ExpenseItem({ expense, icon: Icon, onDelete, onEdit, isD
         </div>
       </div>
       <div className="flex items-center gap-3 shrink-0">
-        <span className="font-mono text-lg tracking-tight text-white/90">{formatINR(expense.amount)}</span>
+        <span className="font-mono text-lg tracking-tight text-white/90">{formatCurrency(expense.amount, currencyCode)}</span>
         <button
           onClick={() => onEdit(expense.id)}
           className="p-2 text-white/30 hover:text-[#D4FF00] hover:bg-[#D4FF00]/10 rounded-xl transition-colors opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100 active:scale-95"

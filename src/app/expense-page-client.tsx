@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { signIn } from "../services/authService";
 import { subscribeToExpenses, addExpense, deleteExpense, updateExpense } from "../services/expenseService";
 import { Expense } from "../types/expense";
-import { formatINR } from "../lib/currency";
+import { formatCurrency, CURRENCIES } from "../lib/currency";
 import { CATEGORIES } from "../lib/constants";
 
 import ExpenseForm from "../components/expense-form";
@@ -67,6 +67,14 @@ export default function ExpensePageClient() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editData, setEditData] = useState({ amount: "", category: "Food", date: "", note: "" });
   const [savingEdit, setSavingEdit] = useState(false);
+
+  const [currency, setCurrency] = useState("INR");
+
+  // Load Currency Preference
+  useEffect(() => {
+    const saved = localStorage.getItem("spendos_currency");
+    if (saved) setCurrency(saved);
+  }, []);
 
   // Auth
   useEffect(() => {
@@ -233,8 +241,16 @@ export default function ExpensePageClient() {
             <div className="w-2 h-2 rounded-full bg-[#D4FF00] animate-pulse" />
             <span className="font-mono text-xs tracking-[0.2em] text-white/50 uppercase">Session Active</span>
           </div>
-          <div className="font-mono text-xs text-white/30 tracking-widest">
-            ID: {user.uid.slice(0, 8).toUpperCase()}
+          <div className="flex items-center gap-4">
+            <CustomSelect
+              value={currency}
+              onChange={(val) => { setCurrency(val); localStorage.setItem("spendos_currency", val); }}
+              options={CURRENCIES.map(c => ({ label: c.label, value: c.value }))}
+              className="w-28 text-xs"
+            />
+            <div className="font-mono text-xs text-white/30 tracking-widest hidden sm:block">
+              ID: {user.uid.slice(0, 8).toUpperCase()}
+            </div>
           </div>
         </header>
 
@@ -244,7 +260,7 @@ export default function ExpensePageClient() {
             <h2 className="text-xs font-mono uppercase tracking-[0.15em]">Net Outflow</h2>
           </div>
           <h1 className="text-[12vw] sm:text-[10vw] md:text-[7vw] leading-none font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white to-white/30">
-            {formatINR(totalExpenses)}
+            {formatCurrency(totalExpenses, currency)}
           </h1>
           <p className="text-white/40 text-xs md:text-sm mt-4 leading-relaxed">
             Track daily spending with fast add, edit, search, and category insights.
@@ -257,6 +273,7 @@ export default function ExpensePageClient() {
           onSubmit={handleAddExpense}
           isSubmitting={isSubmitting}
           submitError={submitError}
+          currencyCode={currency}
         />
       </motion.div>
 
@@ -275,7 +292,7 @@ export default function ExpensePageClient() {
                 {filteredExpenses.length} records
               </div>
             </div>
-            <ExpenseStats monthlyTotal={monthlyTotal} avgExpense={avgExpense} filteredCount={filteredExpenses.length} />
+            <ExpenseStats monthlyTotal={monthlyTotal} avgExpense={avgExpense} filteredCount={filteredExpenses.length} currencyCode={currency} />
 
             <div className="space-y-4 mb-2">
               <div className="relative z-10 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] rounded-xl group">
@@ -316,6 +333,7 @@ export default function ExpensePageClient() {
                 onDelete={handleDelete} 
                 onEdit={handleStartEdit} 
                 deletingId={deletingId} 
+                currencyCode={currency}
               />
             )}
           </div>

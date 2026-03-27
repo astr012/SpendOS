@@ -13,9 +13,10 @@ interface ExpenseListProps {
   onDelete: (id: string) => void;
   onEdit: (id: string) => void;
   deletingId: string | null;
+  currencyCode: string;
 }
 
-export default function ExpenseList({ expenses, onDelete, onEdit, deletingId }: ExpenseListProps) {
+export default function ExpenseList({ expenses, onDelete, onEdit, deletingId, currencyCode }: ExpenseListProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const rowVirtualizer = useVirtualizer({
@@ -74,6 +75,7 @@ export default function ExpenseList({ expenses, onDelete, onEdit, deletingId }: 
                     onDelete={onDelete}
                     onEdit={onEdit}
                     isDeleting={deletingId === expense.id}
+                    currencyCode={currencyCode}
                   />
               </div>
             );

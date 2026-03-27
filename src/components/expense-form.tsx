@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Loader2, ArrowUpRight } from "lucide-react";
 import CategoryPill from "./category-pill";
 import { CATEGORIES } from "../lib/constants";
+import { CURRENCIES } from "../lib/currency";
 
 interface ExpenseFormProps {
   formData: { amount: string; category: string; date: string; note: string };
@@ -11,11 +12,13 @@ interface ExpenseFormProps {
   onSubmit: (e: React.FormEvent) => void;
   isSubmitting: boolean;
   submitError: string | null;
+  currencyCode: string;
 }
 
-export default function ExpenseForm({ formData, setFormData, onSubmit, isSubmitting, submitError }: ExpenseFormProps) {
+export default function ExpenseForm({ formData, setFormData, onSubmit, isSubmitting, submitError, currencyCode }: ExpenseFormProps) {
   const isInvalidAmount = !formData.amount || Number(formData.amount) <= 0 || Number.isNaN(Number(formData.amount));
   const isSubmitDisabled = isSubmitting || isInvalidAmount || !formData.date;
+  const currencySymbol = CURRENCIES.find(c => c.value === currencyCode)?.symbol || "₹";
 
   return (
     <form
@@ -25,7 +28,7 @@ export default function ExpenseForm({ formData, setFormData, onSubmit, isSubmitt
       {/* Amount */}
       <div className="relative group">
         <span className="absolute left-0 top-1/2 -translate-y-1/2 text-3xl md:text-5xl text-white/20 font-light transition-colors group-focus-within:text-[#D4FF00]">
-          ₹
+          {currencySymbol}
         </span>
         <input
           type="number"
