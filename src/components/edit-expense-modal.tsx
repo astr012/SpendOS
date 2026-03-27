@@ -5,6 +5,10 @@ import { CATEGORIES } from "../lib/constants";
 
 import { motion } from "framer-motion";
 
+import CustomSelect from "../components/custom-select";
+
+const CATEGORY_OPTIONS = CATEGORIES.map(cat => ({ label: cat.id, value: cat.id }));
+
 interface EditExpenseModalProps {
   editData: { amount: string; category: string; date: string; note: string };
   setEditData: (data: any) => void;
@@ -40,19 +44,13 @@ export default function EditExpenseModal({ editData, setEditData, onSave, onClos
           className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#D4FF00] hover:border-white/20 transition-all font-mono"
           placeholder="Amount"
         />
-        <div className="flex gap-4">
-          <select
+        <div className="flex gap-4 relative z-10 w-full">
+          <CustomSelect
             value={editData.category}
-            onChange={(e) => setEditData({ ...editData, category: e.target.value })}
-            aria-label="Edit category"
-            className="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#D4FF00] hover:border-white/20 transition-all appearance-none"
-          >
-            {CATEGORIES.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.id}
-              </option>
-            ))}
-          </select>
+            onChange={(val) => setEditData({ ...editData, category: val })}
+            options={CATEGORY_OPTIONS}
+            className="flex-1"
+          />
           <input
             type="date"
             value={editData.date}

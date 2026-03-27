@@ -15,6 +15,8 @@ import ExpenseStats from "../components/expense-stats";
 import ExpenseList from "../components/expense-list";
 import EditExpenseModal from "../components/edit-expense-modal";
 
+import CustomSelect from "../components/custom-select";
+
 const appId = process.env.NEXT_PUBLIC_APP_ID ?? "default-app";
 const ADD_EXPENSE_TIMEOUT_MS = 12000;
 
@@ -31,6 +33,18 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T
     if (timeoutId) window.clearTimeout(timeoutId);
   }
 }
+
+const CATEGORY_FILTER_OPTIONS = [
+  { label: "All Categories", value: "All" },
+  ...CATEGORIES.map(cat => ({ label: cat.id, value: cat.id }))
+];
+
+const SORT_OPTIONS = [
+  { label: "Newest", value: "date-desc" },
+  { label: "Oldest", value: "date-asc" },
+  { label: "Amount High-Low", value: "amount-desc" },
+  { label: "Amount Low-High", value: "amount-asc" }
+];
 
 export default function ExpensePageClient() {
   const [user, setUser] = useState<{ uid: string } | null>(null);
@@ -264,40 +278,34 @@ export default function ExpensePageClient() {
             <ExpenseStats monthlyTotal={monthlyTotal} avgExpense={avgExpense} filteredCount={filteredExpenses.length} />
 
             <div className="space-y-4 mb-2">
-              <div className="relative">
+              <div className="relative z-10">
                 <Search className="w-4 h-4 text-white/40 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search notes or category"
-                  className="w-full bg-black/40 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm outline-none focus:border-[#D4FF00] focus:ring-2 focus:ring-[#D4FF00]/20 hover:border-white/20 transition-colors"
+                  className="w-full bg-black/40 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm outline-none focus:border-[#D4FF00] hover:border-white/20 transition-colors"
                 />
               </div>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <select
+              <div className="flex flex-col sm:flex-row gap-4 relative z-20">
+                <CustomSelect
                   value={categoryFilter}
-                  onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#D4FF00] hover:border-white/20 transition-colors"
-                >
-                  <option value="All">All Categories</option>
-                  {CATEGORIES.map((cat) => <option key={cat.id} value={cat.id}>{cat.id}</option>)}
-                </select>
-                <select
+                  onChange={setCategoryFilter}
+                  options={CATEGORY_FILTER_OPTIONS}
+                  className="flex-1"
+                />
+                <CustomSelect
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as any)}
-                  className="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#D4FF00] hover:border-white/20 transition-colors"
-                >
-                  <option value="date-desc">Newest</option>
-                  <option value="date-asc">Oldest</option>
-                  <option value="amount-desc">Amount High-Low</option>
-                  <option value="amount-asc">Amount Low-High</option>
-                </select>
+                  onChange={(val) => setSortBy(val as any)}
+                  options={SORT_OPTIONS}
+                  className="flex-1"
+                />
               </div>
             </div>
           </div>
 
-          <div className="p-4 md:p-8 pt-4 flex-1 overflow-hidden" style={{ minHeight: "400px" }}>
+          <div className="p-4 md:p-8 pt-4 flex-1 overflow-hidden z-0" style={{ minHeight: "400px" }}>
             {loadingData ? (
               <div className="py-20 flex justify-center h-full items-center">
                 <Loader2 className="w-8 h-8 animate-spin text-white/20" />
