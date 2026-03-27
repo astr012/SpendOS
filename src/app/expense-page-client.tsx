@@ -278,14 +278,14 @@ export default function ExpensePageClient() {
             <ExpenseStats monthlyTotal={monthlyTotal} avgExpense={avgExpense} filteredCount={filteredExpenses.length} />
 
             <div className="space-y-4 mb-2">
-              <div className="relative z-10">
-                <Search className="w-4 h-4 text-white/40 absolute left-3 top-1/2 -translate-y-1/2" />
+              <div className="relative z-10 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] rounded-xl group">
+                <Search className="w-4 h-4 text-white/40 absolute left-3 top-1/2 -translate-y-1/2 transition-colors group-hover:text-white/70" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search notes or category"
-                  className="w-full bg-black/40 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm outline-none focus:border-[#D4FF00] hover:border-white/20 transition-colors"
+                  className="w-full bg-black/40 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm outline-none focus:border-[#D4FF00] group-hover:bg-white/[0.06] group-hover:border-white/20 transition-all"
                 />
               </div>
               <div className="flex flex-col sm:flex-row gap-4 relative z-20">

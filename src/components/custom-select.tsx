@@ -34,15 +34,15 @@ export default function CustomSelect({ value, onChange, options, className = "",
   }, []);
 
   return (
-    <div className={`relative ${className}`} ref={containerRef}>
+    <div className={`relative ${className} transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(0,0,0,0.3)] rounded-xl group`} ref={containerRef}>
       <button
         type="button"
         aria-label={ariaLabel}
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#D4FF00] hover:border-white/20 transition-all focus-visible:ring-2 focus-visible:ring-[#D4FF00]/50"
+        className="w-full flex items-center justify-between bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#D4FF00] transition-all group-hover:bg-white/[0.06] group-hover:border-white/20 focus-visible:ring-2 focus-visible:ring-[#D4FF00]/50"
       >
         <span className="truncate text-white/90">{selectedOption?.label}</span>
-        <ChevronDown className={`w-4 h-4 text-white/40 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+        <ChevronDown className={`w-4 h-4 text-white/40 transition-all duration-200 ${isOpen ? "rotate-180 text-[#D4FF00]" : "group-hover:text-white/70"}`} />
       </button>
 
       <AnimatePresence>
